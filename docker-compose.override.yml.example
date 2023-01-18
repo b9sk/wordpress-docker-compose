@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  wp:
+    ports:
+      - 8080:80
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: "${DB_HOST}"
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+    links:
+      - db:db
+    ports:
+      - 8081:80
+

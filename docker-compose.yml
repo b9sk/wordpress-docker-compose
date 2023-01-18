@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  wp:
+    build:
+      context: ./docker/wp
+    volumes:
+      - ./docker/wp/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - ./wp:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: "${DB_HOST}"
+      WORDPRESS_DB_NAME: "${DB_NAME}"
+      WORDPRESS_DB_USER: "${DB_USER}"
+      WORDPRESS_DB_PASSWORD: "${DB_PASSWORD}"
+    depends_on:
+      - db
+    links:
+      - db
+    restart: unless-stopped
+    user: 1000:1000
+
+  wpcli:
+    image: wordpress:cli
+    volumes:
+      - ./docker/wp/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - ./wp:/var/www/html
+    working_dir: /var/www/html
+    user: 1000:1000
+    depends_on:
+      - db
+      - wp
+
+  db:
+    image: mysql:latest
+    command: [
+        '--default_authentication_plugin=mysql_native_password',
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci'
+    ]
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    restart: unless-stopped
+
+  redis:
+    restart: unless-stopped
+    image: redis:6-buster
+
+  composer:
+    volumes:
+      - ./wp:/var/www/html
+    working_dir: /var/www/html
+    image: composer:latest
+    user: 1000:1000

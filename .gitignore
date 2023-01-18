@@ -1,0 +1,16 @@
+db/
+
+mysql-dump/*
+!/mysql-dump/.gitkeep
+
+wp/*
+!/wp/.gitkeep
+
+docker-compose.override.yml
+
+.idea/
+.vscode/
+*.log
+*.zip
+*.gz
+
