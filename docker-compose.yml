@@ -8,12 +8,13 @@ services:
       - ./docker/wp/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp:/var/www/html
     environment:
-      WORDPRESS_DB_HOST: "${DB_HOST}"
-      WORDPRESS_DB_NAME: "${DB_NAME}"
-      WORDPRESS_DB_USER: "${DB_USER}"
-      WORDPRESS_DB_PASSWORD: "${DB_PASSWORD}"
+      WORDPRESS_DB_HOST: ${DB_HOST}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
+      - redis
     links:
       - db
     restart: unless-stopped
@@ -41,10 +42,10 @@ services:
       - ./mysql-dump:/docker-entrypoint-initdb.d
       - ./db:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_USER: "${DB_USER}"
-      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     restart: unless-stopped
 
   redis:
